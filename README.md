@@ -1,2 +1,3 @@
-# soktalk-grafana-dashboards
-Canonical Git-backed source of truth for Grafana dashboards across the SokTalk org.
+# SokTalk Org Grafana Dashboards
+# ... (see extract-dashboards.py for full template)
+# Extracted from grafana-dashboards ConfigMap. Push to doksok/soktalk-grafana-dashboards.

@@ -1,0 +1,435 @@
+{
+  "id": null,
+  "uid": "k8s-cluster-health",
+  "title": "Kubernetes / Cluster Health",
+  "tags": [
+    "kubernetes",
+    "cluster",
+    "health"
+  ],
+  "timezone": "browser",
+  "panels": [
+    {
+      "id": 1,
+      "title": "Nodes Ready",
+      "type": "stat",
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 0,
+        "y": 0
+      },
+      "targets": [
+        {
+          "expr": "sum(kube_node_status_condition{condition=\"Ready\",status=\"true\"})",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "thresholds": {
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          }
+        }
+      },
+      "description": "Number of Kubernetes nodes in Ready state, from `kube_node_status_condition{condition=\"Ready\", status=\"true\"}`. All nodes should be ready for normal cluster operation."
+    },
+    {
+      "id": 2,
+      "title": "Nodes Not Ready",
+      "type": "stat",
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 4,
+        "y": 0
+      },
+      "targets": [
+        {
+          "expr": "sum(kube_node_status_condition{condition=\"Ready\",status=\"false\"})",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "thresholds": {
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          }
+        }
+      },
+      "description": "Number of nodes NOT in Ready state, from `kube_node_status_condition{condition=\"Ready\", status=\"false\"}`. Non-zero indicates node problems."
+    },
+    {
+      "id": 3,
+      "title": "Total Pods",
+      "type": "stat",
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 8,
+        "y": 0
+      },
+      "targets": [
+        {
+          "expr": "sum(kube_pod_info)",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      },
+      "description": "Total number of pods known to the cluster (all phases), from `kube_pod_info`. Includes running, pending, failed, etc."
+    },
+    {
+      "id": 4,
+      "title": "Running Pods",
+      "type": "stat",
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 12,
+        "y": 0
+      },
+      "targets": [
+        {
+          "expr": "sum(kube_pod_status_phase{phase=\"Running\"})",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      },
+      "description": "Number of pods in Running phase, from `kube_pod_status_phase{phase=\"Running\"}`. Should be close to total pods in a healthy cluster."
+    },
+    {
+      "id": 5,
+      "title": "Total Deployments",
+      "type": "stat",
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 0,
+        "y": 4
+      },
+      "targets": [
+        {
+          "expr": "sum(kube_deployment_labels)",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      },
+      "description": "Total number of Deployment resources in the cluster, from `kube_deployment_labels`."
+    },
+    {
+      "id": 6,
+      "title": "Deployments Ready",
+      "type": "stat",
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 4,
+        "y": 4
+      },
+      "targets": [
+        {
+          "expr": "sum(kube_deployment_status_condition{condition=\"Available\",status=\"true\"})",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      },
+      "description": "Number of Deployments with Available condition true, from `kube_deployment_status_condition{condition=\"Available\", status=\"true\"}`. These are serving their intended replicas."
+    },
+    {
+      "id": 7,
+      "title": "Total Namespaces",
+      "type": "stat",
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 8,
+        "y": 4
+      },
+      "targets": [
+        {
+          "expr": "count(kube_namespace_labels)",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      },
+      "description": "Total number of namespaces in the cluster, from `kube_namespace_labels`."
+    },
+    {
+      "id": 8,
+      "title": "Total Services",
+      "type": "stat",
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 12,
+        "y": 4
+      },
+      "targets": [
+        {
+          "expr": "sum(kube_service_labels)",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      },
+      "description": "Total number of Service resources, from `kube_service_labels`."
+    },
+    {
+      "id": 9,
+      "title": "Pod Status by Phase",
+      "type": "graph",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 8
+      },
+      "targets": [
+        {
+          "expr": "sum(kube_pod_status_phase) by (phase)",
+          "legendFormat": "{{phase}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      },
+      "description": "Breakdown of pods by phase (Running, Pending, Failed, Succeeded, Unknown), from `kube_pod_status_phase` by (phase). Gives a quick health picture of the workload. Running should dominate; Pending means pods are waiting for scheduling or resources; Failed means pods have crashed."
+    },
+    {
+      "id": 10,
+      "title": "Pod Restarts by Namespace",
+      "type": "graph",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 8
+      },
+      "targets": [
+        {
+          "expr": "sum(increase(kube_pod_container_status_restarts_total[1h])) by (namespace)",
+          "legendFormat": "{{namespace}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      },
+      "description": "Pod container restarts in the last hour, grouped by namespace, from `increase(kube_pod_container_status_restarts_total[1h])` by (namespace). Spikes indicate unstable workloads \u2014 pods that are crashing or being evicted repeatedly."
+    },
+    {
+      "id": 11,
+      "title": "Node CPU Utilization %",
+      "type": "graph",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 16
+      },
+      "targets": [
+        {
+          "expr": "100 - (avg by (instance) (rate(node_cpu_seconds_total{mode=\"idle\"}[5m])) * 100)",
+          "legendFormat": "{{instance}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent"
+        }
+      },
+      "description": "Average CPU utilization across all nodes, calculated as 100 - idle%, from `node_cpu_seconds_total` (idle mode). From node_exporter."
+    },
+    {
+      "id": 12,
+      "title": "Node Memory Utilization %",
+      "type": "graph",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 16
+      },
+      "targets": [
+        {
+          "expr": "(1 - node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) * 100",
+          "legendFormat": "{{instance}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent"
+        }
+      },
+      "description": "Average memory usage percentage across all nodes, from `node_memory_MemAvailable_bytes` vs `node_memory_MemTotal_bytes`. From node_exporter."
+    },
+    {
+      "id": 13,
+      "title": "Container CPU Usage by Namespace",
+      "type": "graph",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 24
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(container_cpu_usage_seconds_total{container!=\"\"}[5m])) by (namespace)",
+          "legendFormat": "{{namespace}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "core"
+        }
+      },
+      "description": "CPU consumption by namespace from container metrics, from `container_cpu_usage_seconds_total` by (namespace). Excludes empty container names."
+    },
+    {
+      "id": 14,
+      "title": "Container Memory Usage by Namespace",
+      "type": "graph",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 24
+      },
+      "targets": [
+        {
+          "expr": "sum(container_memory_working_set_bytes{container!=\"\"}) by (namespace)",
+          "legendFormat": "{{namespace}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes"
+        }
+      },
+      "description": "Memory consumption by namespace from container metrics, from `container_memory_working_set_bytes` by (namespace)."
+    },
+    {
+      "id": 15,
+      "title": "Deployments Ready vs Desired",
+      "type": "graph",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 32
+      },
+      "targets": [
+        {
+          "expr": "sum(kube_deployment_spec_replicas) by (namespace)",
+          "legendFormat": "Desired: {{namespace}}",
+          "refId": "A"
+        },
+        {
+          "expr": "sum(kube_deployment_status_replicas_available) by (namespace)",
+          "legendFormat": "Ready: {{namespace}}",
+          "refId": "B"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      },
+      "description": "Deployments with Available condition true vs total desired replicas, by namespace, from `kube_deployment_status_condition{condition=\"Available\", status=\"true\"}` and `kube_deployment_spec_replicas` by (namespace). Shows where deployments are fully available and where they are under-replicated."
+    },
+    {
+      "id": 16,
+      "title": "Persistent Volume Usage %",
+      "type": "graph",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 32
+      },
+      "targets": [
+        {
+          "expr": "(1 - kube_persistentvolumeclaim_resource_requests_storage_bytes / kube_persistentvolume_status_capacity_bytes) * 100",
+          "legendFormat": "{{persistentvolumeclaim}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent"
+        }
+      },
+      "description": "Storage usage percentage for persistent volume claims, calculated as 1 - (available / capacity), from `kube_persistentvolumeclaim_resource_requests_storage_bytes` and `kube_persistentvolume_status_capacity_bytes`."
+    }
+  ],
+  "schemaVersion": 42,
+  "version": 1,
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "templating": {
+    "list": []
+  },
+  "annotations": {
+    "list": []
+  },
+  "refresh": "5s",
+  "links": [],
+  "editable": true,
+  "graphTooltip": 1
+}

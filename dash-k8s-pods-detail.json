@@ -1,0 +1,222 @@
+{
+  "id": null,
+  "uid": "k8s-pods-detail",
+  "title": "Kubernetes / Pods Detail",
+  "tags": [
+    "kubernetes",
+    "pods",
+    "containers"
+  ],
+  "timezone": "browser",
+  "panels": [
+    {
+      "id": 1,
+      "title": "Pod Status by Phase",
+      "type": "graph",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "targets": [
+        {
+          "expr": "sum(kube_pod_status_phase) by (phase)",
+          "legendFormat": "{{phase}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      },
+      "description": "Pod count grouped by phase (Running, Pending, etc.), from `kube_pod_status_phase` by (phase). Quick overview of pod health."
+    },
+    {
+      "id": 2,
+      "title": "Restarting Pods (last 1h)",
+      "type": "graph",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "targets": [
+        {
+          "expr": "sum(increase(kube_pod_container_status_restarts_total[1h])) by (pod)",
+          "legendFormat": "{{pod}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      },
+      "description": "Pod container restart count in the last hour, by pod, from `increase(kube_pod_container_status_restarts_total[1h])`. Identifies pods that are crashing."
+    },
+    {
+      "id": 3,
+      "title": "Pending Pods",
+      "type": "graph",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 8
+      },
+      "targets": [
+        {
+          "expr": "sum(kube_pod_status_phase{phase=\"Pending\"}) by (namespace)",
+          "legendFormat": "{{namespace}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      },
+      "description": "Pods stuck in Pending phase, by namespace, from `kube_pod_status_phase{phase=\"Pending\"}`. Pending pods are waiting for scheduling or resources."
+    },
+    {
+      "id": 4,
+      "title": "Container CPU Usage by Pod",
+      "type": "graph",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 8
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(container_cpu_usage_seconds_total{container!=\"\"}[5m])) by (pod)",
+          "legendFormat": "{{pod}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "core"
+        }
+      },
+      "description": "CPU consumption per pod from container metrics, from `container_cpu_usage_seconds_total` by (pod). Excludes empty container names."
+    },
+    {
+      "id": 5,
+      "title": "Container Memory Usage by Pod",
+      "type": "graph",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 16
+      },
+      "targets": [
+        {
+          "expr": "sum(container_memory_working_set_bytes{container!=\"\"}) by (pod)",
+          "legendFormat": "{{pod}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes"
+        }
+      },
+      "description": "Memory consumption per pod (working set), from `container_memory_working_set_bytes` by (pod)."
+    },
+    {
+      "id": 6,
+      "title": "Container CPU Throttling by Pod",
+      "type": "graph",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 16
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(container_cpu_cfs_throttled_seconds_total[5m])) by (pod)",
+          "legendFormat": "{{pod}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s"
+        }
+      },
+      "description": "Rate of CPU throttling per pod, from `container_cpu_cfs_throttled_seconds_total`. Non-zero means the pod is hitting CPU limits."
+    },
+    {
+      "id": 7,
+      "title": "Container Memory Failures by Pod",
+      "type": "graph",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 24
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(container_memory_failcnt_total[5m])) by (pod)",
+          "legendFormat": "{{pod}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      },
+      "description": "Rate of memory allocation failures per pod, from `container_memory_failcnt_total`. Indicates pods running out of memory."
+    },
+    {
+      "id": 8,
+      "title": "Pods by Namespace",
+      "type": "graph",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 24
+      },
+      "targets": [
+        {
+          "expr": "count(kube_pod_info) by (namespace)",
+          "legendFormat": "{{namespace}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      },
+      "description": "Pod count per namespace, from `kube_pod_info` by (namespace). Shows workload distribution."
+    }
+  ],
+  "schemaVersion": 42,
+  "version": 1,
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "templating": {
+    "list": []
+  },
+  "annotations": {
+    "list": []
+  },
+  "refresh": "5s",
+  "links": [],
+  "editable": true,
+  "graphTooltip": 1
+}

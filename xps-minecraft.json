@@ -1,0 +1,299 @@
+{
+  "id": null,
+  "panels": [
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "max": 20,
+          "min": 0,
+          "thresholds": {
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 10
+              },
+              {
+                "color": "green",
+                "value": 18
+              }
+            ]
+          },
+          "unit": "none"
+        }
+      },
+      "fill": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "lines": true,
+      "strokeWidth": 2,
+      "targets": [
+        {
+          "expr": "minecraft_server_tps{job=\"xps-minecraft-metrics\", device=\"xps\"}",
+          "legendFormat": "{{server_id}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Server TPS (Ticks Per Second)",
+      "type": "graph",
+      "description": "Ticks per second reported by each Minecraft server, from `minecraft_server_tps` exposed by the minecraft-exporter on the XPS (port 9202). Ideal TPS is 20.0; values below 18 indicate server lag. Data source: custom minecraft-exporter scraping Minecraft server metrics."
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "shades",
+            "palette": " Greens"
+          },
+          "min": 0,
+          "unit": "none"
+        }
+      },
+      "fill": 1,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "lines": true,
+      "strokeWidth": 1,
+      "targets": [
+        {
+          "expr": "minecraft_server_player_count{job=\"xps-minecraft-metrics\", device=\"xps\"}",
+          "legendFormat": "{{server_id}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Players Online (per server)",
+      "type": "graph",
+      "description": "Number of players currently online on each Minecraft server, from `minecraft_server_player_count` exposed by the minecraft-exporter on the XPS."
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "shades",
+            "palette": " Blues"
+          },
+          "unit": "bytes"
+        }
+      },
+      "fill": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 8
+      },
+      "lines": true,
+      "strokeWidth": 1,
+      "targets": [
+        {
+          "expr": "minecraft_java_heap_used_bytes{job=\"xps-minecraft-metrics\", device=\"xps\"}",
+          "legendFormat": "{{server_id}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Java Heap Used (per server)",
+      "type": "graph",
+      "description": "Java heap memory currently used by each Minecraft server process, from `minecraft_java_heap_used_bytes` exposed by the minecraft-exporter on the XPS."
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "shades",
+            "palette": " Oranges"
+          },
+          "unit": "bytes"
+        }
+      },
+      "fill": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 8
+      },
+      "lines": true,
+      "strokeWidth": 1,
+      "targets": [
+        {
+          "expr": "minecraft_java_heap_committed_bytes{job=\"xps-minecraft-metrics\", device=\"xps\"}",
+          "legendFormat": "{{server_id}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Java Heap Committed (per server)",
+      "type": "graph",
+      "description": "Java heap memory committed (guaranteed available) to each Minecraft server process, from `minecraft_java_heap_committed_bytes` exposed by the minecraft-exporter on the XPS."
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "shades",
+            "palette": " Purples"
+          },
+          "unit": "bytes"
+        }
+      },
+      "fill": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 16
+      },
+      "lines": true,
+      "strokeWidth": 1,
+      "targets": [
+        {
+          "expr": "minecraft_java_max_heap_bytes{job=\"xps-minecraft-metrics\", device=\"xps\"}",
+          "legendFormat": "{{server_id}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Java Max Heap (per server)",
+      "type": "graph",
+      "description": "Maximum Java heap size configured for each Minecraft server process, from `minecraft_java_max_heap_bytes` exposed by the minecraft-exporter on the XPS."
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "shades",
+            "palette": " Teals"
+          },
+          "unit": "s"
+        }
+      },
+      "fill": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 16
+      },
+      "lines": true,
+      "strokeWidth": 1,
+      "targets": [
+        {
+          "expr": "minecraft_server_uptime_seconds{job=\"xps-minecraft-metrics\", device=\"xps\"}",
+          "legendFormat": "{{server_id}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Server Uptime (per server)",
+      "type": "graph",
+      "description": "How long each Minecraft server has been running, in seconds, from `minecraft_server_uptime_seconds` exposed by the minecraft-exporter on the XPS."
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "shades",
+            "palette": " Teals"
+          },
+          "unit": "bytes"
+        }
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 12,
+        "x": 0,
+        "y": 24
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "expr": "crafty_world_size_bytes{job=\"xps-crafty-metrics\", device=\"xps\"}",
+          "legendFormat": "{{server_id}}",
+          "refId": "A"
+        }
+      ],
+      "title": "World Size (per server, from Crafty)",
+      "type": "stat",
+      "description": "Total size of each server's world directory on disk, from `crafty_world_size_bytes` exposed by the crafty-exporter on the XPS. Sourced from Crafty's server management data rather than the Minecraft server itself."
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "shades",
+            "palette": " Greens"
+          },
+          "unit": "none"
+        }
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 12,
+        "x": 12,
+        "y": 24
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "expr": "minecraft_server_max_players{job=\"xps-minecraft-metrics\", device=\"xps\"}",
+          "legendFormat": "{{server_id}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Max Players (per server)",
+      "type": "stat",
+      "description": "Maximum number of players configured for each Minecraft server, from `minecraft_server_max_players` exposed by the minecraft-exporter on the XPS."
+    },
+    {
+      "content": "## Minecraft Server Monitor\n\n**Device:** Dell XPS L701X (obs-bounce)\n**Minecraft Exporter:** port 9202\n**Crafty Exporter:** port 9201\n\n### Key Metrics:\n- **TPS:** Target = 20. Below 10 = lag\n- **Players:** Current vs max\n- **Java Heap:** Used vs committed vs max\n- **Uptime:** Server process duration\n- **World Size:** From Crafty file stats\n\n_Updated: {{__rate_interval}}_",
+      "gridPos": {
+        "h": 4,
+        "w": 24,
+        "x": 0,
+        "y": 28
+      },
+      "mode": "markdown",
+      "title": "Minecraft Summary",
+      "type": "text",
+      "description": "Text panel with a summary of Minecraft server status across all instances on the XPS, including server count, total players, and TPS overview. Data sourced from both the minecraft-exporter and crafty-exporter on the XPS."
+    }
+  ],
+  "refresh": "15s",
+  "schemaVersion": 38,
+  "tags": [
+    "xps",
+    "minecraft",
+    "server"
+  ],
+  "timezone": "browser",
+  "title": "Minecraft Server Monitor",
+  "uid": "xps-minecraft",
+  "version": 1
+}

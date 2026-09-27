@@ -1,0 +1,303 @@
+{
+  "id": null,
+  "uid": "traefik-ingress",
+  "title": "Traefik / Ingress Traffic",
+  "tags": [
+    "traefik",
+    "ingress",
+    "http"
+  ],
+  "timezone": "browser",
+  "panels": [
+    {
+      "id": 1,
+      "title": "HTTP Request Rate (req/s)",
+      "type": "graph",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(traefik_requests_total[5m]))",
+          "legendFormat": "All routes",
+          "refId": "A"
+        },
+        {
+          "expr": "sum(rate(traefik_requests_total{traefik_route_status_code=\"200\"}[5m]))",
+          "legendFormat": "200 OK",
+          "refId": "B"
+        },
+        {
+          "expr": "sum(rate(traefik_requests_total{traefik_route_status_code=~\"5..\"}[5m]))",
+          "legendFormat": "5xx Errors",
+          "refId": "C"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "reqps"
+        }
+      },
+      "description": "Total HTTP request rate hitting Traefik ingress, from `rate(traefik_requests_total[5m])`. Sum across all routes."
+    },
+    {
+      "id": 2,
+      "title": "HTTP Response Status Distribution",
+      "type": "graph",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "targets": [
+        {
+          "expr": "sum(increase(traefik_requests_total[5m])) by (traefik_route_status_code)",
+          "legendFormat": "{{traefik_route_status_code}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      },
+      "description": "Count of responses grouped by HTTP status code over the last 5 minutes, from `increase(traefik_requests_total[5m])` by (traefik_route_status_code). Shows 2xx, 4xx, 5xx split."
+    },
+    {
+      "id": 3,
+      "title": "Average Response Time (ms)",
+      "type": "graph",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 8
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(traefik_requests_total[5m])) / sum(rate(traefik_request_duration_seconds_count[5m])) * 1000",
+          "legendFormat": "Average",
+          "refId": "A"
+        },
+        {
+          "expr": "histogram_quantile(0.95, sum(rate(traefik_request_duration_seconds_bucket[5m])) by (le)) * 1000",
+          "legendFormat": "p95",
+          "refId": "B"
+        },
+        {
+          "expr": "histogram_quantile(0.99, sum(rate(traefik_request_duration_seconds_bucket[5m])) by (le)) * 1000",
+          "legendFormat": "p99",
+          "refId": "C"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms"
+        }
+      },
+      "description": "Average HTTP response time in milliseconds, calculated as total requests / total duration samples * 1000, from `traefik_requests_total` and `traefik_request_duration_seconds_count`."
+    },
+    {
+      "id": 4,
+      "title": "Traefik CPU Usage",
+      "type": "graph",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 8
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(container_cpu_usage_seconds_total{container=\"traefik\", pod=~\"traefik-.*\"}[5m])) by (pod)",
+          "legendFormat": "{{pod}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "core"
+        }
+      },
+      "description": "CPU usage rate of Traefik containers, from `container_cpu_usage_seconds_total`. Per pod."
+    },
+    {
+      "id": 5,
+      "title": "Traefik Memory Usage",
+      "type": "graph",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 16
+      },
+      "targets": [
+        {
+          "expr": "sum(container_memory_working_set_bytes{container=\"traefik\", pod=~\"traefik-.*\"}) by (pod)",
+          "legendFormat": "{{pod}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes"
+        }
+      },
+      "description": "Working set memory of Traefik containers, from `container_memory_working_set_bytes`. Per pod."
+    },
+    {
+      "id": 6,
+      "title": "Requests by Service",
+      "type": "graph",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 16
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(traefik_requests_total[5m])) by (traefik_route_service_name)",
+          "legendFormat": "{{traefik_route_service_name}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "reqps"
+        }
+      },
+      "description": "Request rate grouped by backend service name, from `traefik_requests_total` by (traefik_route_service_name). Shows which services are receiving traffic."
+    },
+    {
+      "id": 7,
+      "title": "Error Rate % (5xx)",
+      "type": "graph",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 24
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(traefik_requests_total{traefik_route_status_code=~\"5..\"}[5m])) / sum(rate(traefik_requests_total[5m])) * 100",
+          "legendFormat": "Error rate",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "thresholds": {
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 1
+              },
+              {
+                "color": "red",
+                "value": 5
+              }
+            ]
+          }
+        }
+      },
+      "description": "Percentage of requests resulting in 5xx errors, from 5xx request rate / total request rate * 100. Indicates server-side errors."
+    },
+    {
+      "id": 8,
+      "title": "Active Traefik Pods",
+      "type": "stat",
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 0,
+        "y": 32
+      },
+      "targets": [
+        {
+          "expr": "sum(kube_pod_status_phase{phase=\"Running\", pod=~\"traefik-.*\"})",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      },
+      "description": "Number of Traefik pods in Running state, from `kube_pod_status_phase` filtered to traefik pods."
+    },
+    {
+      "id": 9,
+      "title": "Traefik Version",
+      "type": "stat",
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 4,
+        "y": 32
+      },
+      "targets": [
+        {
+          "expr": "traefik_version_info",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      },
+      "description": "Traefik version reported by the `traefik_version_info` metric. Shows the currently running version."
+    },
+    {
+      "id": 10,
+      "title": "EntryPoints",
+      "type": "stat",
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 8,
+        "y": 32
+      },
+      "targets": [
+        {
+          "expr": "count(traefik_entry_point_open_connections)",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      },
+      "description": "Number of open connections across Traefik entry points, from `traefik_entry_point_open_connections`. Shows current connection load."
+    }
+  ],
+  "schemaVersion": 42,
+  "version": 1,
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "templating": {
+    "list": []
+  },
+  "annotations": {
+    "list": []
+  },
+  "refresh": "5s",
+  "links": [],
+  "editable": true,
+  "graphTooltip": 1
+}

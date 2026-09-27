@@ -1,0 +1,530 @@
+{
+  "id": null,
+  "panels": [
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 1
+              },
+              {
+                "color": "red",
+                "value": 10
+              }
+            ]
+          },
+          "unit": "none"
+        }
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 0,
+        "y": 0
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "expr": "smart_sda_reallocated_sector_count{job=\"xps-node-exporter\"}",
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "title": "sda - Reallocated Sectors",
+      "type": "stat",
+      "description": "Number of sectors on drive sda that have been relocated by the drive's internal sparing mechanism, from SMART attribute Reallocated_Sector_Ct via `smartctl` polling (collected by smart-monitor.sh, exposed through node_exporter's textfile collector). Non-zero and increasing indicates drive degradation."
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "shades",
+            "palette": " Teals"
+          },
+          "unit": "none"
+        }
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 6,
+        "y": 0
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "expr": "smart_sda_power_on_hours{job=\"xps-node-exporter\"}",
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "title": "sda - Power On Hours",
+      "type": "stat",
+      "description": "Total hours drive sda has been powered on, from SMART attribute Power_On_Hours via `smartctl`. A wear indicator; higher values mean more accumulated drive usage."
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          },
+          "unit": "none"
+        }
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 12,
+        "y": 0
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "expr": "smart_sda_uncorrectable_error_count{job=\"xps-node-exporter\"}",
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "title": "sda - Uncorrectable Errors",
+      "type": "stat",
+      "description": "Count of uncorrectable errors encountered on drive sda, from SMART attribute Uncorrectable_Error_Cnt via `smartctl`. Any non-zero value indicates data integrity problems."
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "shades",
+            "palette": " Blues"
+          },
+          "unit": "none"
+        }
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 18,
+        "y": 0
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "expr": "smart_sda_host_writes_32mib{job=\"xps-node-exporter\"}",
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "title": "sda - Host Writes (32MiB blocks)",
+      "type": "stat",
+      "description": "Total data written to drive sda by the host, in 32 MiB blocks, from SMART attribute Host_Write_32MiB via `smartctl`. A usage/wear indicator from the host side."
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 1
+              },
+              {
+                "color": "red",
+                "value": 10
+              }
+            ]
+          },
+          "unit": "none"
+        }
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 0,
+        "y": 4
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "expr": "smart_sdb_reallocated_sector_count{job=\"xps-node-exporter\"}",
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "title": "sdb - Reallocated Sectors",
+      "type": "stat",
+      "description": "Number of sectors on drive sdb that have been relocated, from SMART attribute Reallocated_Sector_Ct via `smartctl`. Non-zero and increasing indicates drive degradation."
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "shades",
+            "palette": " Oranges"
+          },
+          "unit": "none"
+        }
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 6,
+        "y": 4
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "expr": "smart_sdb_power_on_hours{job=\"xps-node-exporter\"}",
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "title": "sdb - Power On Hours",
+      "type": "stat",
+      "description": "Total hours drive sdb has been powered on, from SMART attribute Power_On_Hours via `smartctl`. Wear indicator."
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 1
+              },
+              {
+                "color": "red",
+                "value": 10
+              }
+            ]
+          },
+          "unit": "none"
+        }
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 12,
+        "y": 4
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "expr": "smart_sdb_current_pending_sector{job=\"xps-node-exporter\"}",
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "title": "sdb - Current Pending Sectors",
+      "type": "stat",
+      "description": "Sectors on drive sdb that are awaiting remapping (bad sectors waiting to be replaced), from SMART attribute Current_Pending_Sector via `smartctl`. Non-zero indicates impending sector failure."
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          },
+          "unit": "none"
+        }
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 18,
+        "y": 4
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "expr": "smart_sdb_udma_crc_error_count{job=\"xps-node-exporter\"}",
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "title": "sdb - UDMA CRC Errors",
+      "type": "stat",
+      "description": "Count of CRC errors detected on the SATA interface for drive sdb, from SMART attribute UDMA_CRC_Error_Cnt via `smartctl`. Non-zero indicates cable/connection issues between drive and controller."
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "shades",
+            "palette": " Reds"
+          },
+          "unit": "none"
+        }
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 0,
+        "y": 8
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "expr": "smart_sdb_seek_error_rate{job=\"xps-node-exporter\"}",
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "title": "sdb - Seek Error Rate",
+      "type": "stat",
+      "description": "Seek error rate on drive sdb (raw SMART attribute), from `smartctl`. Lower values are better; a rising trend indicates mechanical head positioning problems."
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "shades",
+            "palette": " Blues"
+          },
+          "unit": "none"
+        }
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 6,
+        "y": 8
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "expr": "smart_sdb_raw_read_error_rate{job=\"xps-node-exporter\"}",
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "title": "sdb - Raw Read Error Rate",
+      "type": "stat",
+      "description": "Raw read error rate on drive sdb (raw SMART attribute), from `smartctl`. Lower values are better; rising trends indicate read reliability degradation."
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "shades",
+            "palette": " Purples"
+          },
+          "unit": "none"
+        }
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 12,
+        "y": 8
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "expr": "smart_sdb_load_cycle_count{job=\"xps-node-exporter\"}",
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "title": "sdb - Load/Unload Cycle Count",
+      "type": "stat",
+      "description": "Number of load/unload cycles on drive sdb, from SMART attribute Load_Cycle_Count via `smartctl`. High counts indicate frequent spin-up/spin-down cycles."
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "thresholds": {
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 50
+              },
+              {
+                "color": "red",
+                "value": 60
+              }
+            ]
+          },
+          "unit": "celsius"
+        }
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 6,
+        "x": 18,
+        "y": 8
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "expr": "smart_sdb_airflow_temperature_celsius{job=\"xps-node-exporter\"}",
+          "legendFormat": "",
+          "refId": "A"
+        }
+      ],
+      "title": "sdb - Temperature (Celsius)",
+      "type": "stat",
+      "description": "Current temperature of drive sdb in Celsius, from SMART attribute Airflow_Temperature_Celsius via `smartctl`. Elevated temperatures can shorten drive life."
+    }
+  ],
+  "refresh": "1m",
+  "schemaVersion": 38,
+  "tags": [
+    "xps",
+    "smart",
+    "storage"
+  ],
+  "timezone": "browser",
+  "title": "XPS Drive Health (SMART)",
+  "uid": "xps-drive-health",
+  "version": 1
+}

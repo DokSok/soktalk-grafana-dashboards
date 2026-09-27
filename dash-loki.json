@@ -1,0 +1,111 @@
+{
+  "id": null,
+  "uid": "loki-logs",
+  "title": "Loki / Log Analysis",
+  "tags": [
+    "loki",
+    "logs"
+  ],
+  "timezone": "browser",
+  "panels": [
+    {
+      "id": 1,
+      "title": "Log Volume by Namespace",
+      "type": "graph",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "targets": [
+        {
+          "expr": "sum(count_over_time({namespace=~\".+\"}[5m])) by (namespace)",
+          "legendFormat": "{{namespace}}",
+          "refId": "A",
+          "datasource": {
+            "type": "loki",
+            "uid": "loki"
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      },
+      "description": "Count of log lines ingested per namespace over 5-minute windows, from Loki's `{namespace=~\".+\"}` stream count. Shows which namespaces are producing the most logs."
+    },
+    {
+      "id": 2,
+      "title": "Log Volume by Pod",
+      "type": "graph",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "targets": [
+        {
+          "expr": "sum(count_over_time({namespace=~\".+\", pod=~\".+\"}[5m])) by (namespace, pod)",
+          "legendFormat": "{{pod}} ({{namespace}})",
+          "refId": "A",
+          "datasource": {
+            "type": "loki",
+            "uid": "loki"
+          }
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      },
+      "description": "Count of log lines per pod over 5-minute windows, from Loki streams grouped by namespace and pod. Identifies chatty pods."
+    },
+    {
+      "id": 3,
+      "title": "Recent Logs (sample)",
+      "type": "table",
+      "gridPos": {
+        "h": 12,
+        "w": 24,
+        "x": 0,
+        "y": 8
+      },
+      "targets": [
+        {
+          "expr": "{namespace=~\".+\"} |= \"error\" | json | line_format \"{{.namespace}} / {{.pod}} / {{__line__}}\"",
+          "refId": "A",
+          "datasource": {
+            "type": "loki",
+            "uid": "loki"
+          },
+          "format": "table"
+        }
+      ],
+      "options": {
+        "showThema": true
+      },
+      "description": "Sample of recent log lines containing 'error' across all namespaces, formatted as `namespace / pod / line`. From a Loki log query with JSON extraction (`| json`) and line formatting. **Note:** this is a **sample**, not the full error log \u2014 it only shows lines that contain the word 'error' and that Loki has ingested. For full log browsing, use Grafana's Explore view or the Loki UI. Lines that are not valid JSON may not render correctly."
+    }
+  ],
+  "schemaVersion": 42,
+  "version": 1,
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "templating": {
+    "list": []
+  },
+  "annotations": {
+    "list": []
+  },
+  "refresh": "5s",
+  "links": [],
+  "editable": true,
+  "graphTooltip": 1
+}

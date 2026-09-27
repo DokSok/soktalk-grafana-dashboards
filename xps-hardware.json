@@ -1,0 +1,194 @@
+{
+  "id": null,
+  "panels": [
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "shades",
+            "palette": " Reds"
+          },
+          "max": 100,
+          "min": 0,
+          "unit": "percent"
+        }
+      },
+      "fill": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "lines": true,
+      "strokeWidth": 1,
+      "targets": [
+        {
+          "expr": "100 - (avg by(instance, cpu) (rate(node_cpu_seconds_total{job=\"xps-node-exporter\", device=\"xps\"}[5m])) * 100)",
+          "legendFormat": "{{cpu}}",
+          "refId": "A"
+        }
+      ],
+      "title": "CPU Usage (all cores)",
+      "type": "graph",
+      "description": "CPU utilization percentage across all cores of the XPS, calculated as 100 - idle% from `node_cpu_seconds_total`. From node_exporter running on the XPS (job: xps-node-exporter)."
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "scheme",
+            "scheme": "GnYor"
+          },
+          "unit": "bytes"
+        }
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "targets": [
+        {
+          "expr": "node_memory_MemTotal_bytes{job=\"xps-node-exporter\", device=\"xps\"}",
+          "legendFormat": "Total",
+          "refId": "A"
+        },
+        {
+          "expr": "node_memory_MemAvailable_bytes{job=\"xps-node-exporter\", device=\"xps\"}",
+          "legendFormat": "Available",
+          "refId": "B"
+        },
+        {
+          "expr": "node_memory_MemTotal_bytes{job=\"xps-node-exporter\", device=\"xps\"} - node_memory_MemAvailable_bytes{job=\"xps-node-exporter\", device=\"xps\"}",
+          "legendFormat": "Used",
+          "refId": "C"
+        }
+      ],
+      "title": "Memory Usage",
+      "type": "graph",
+      "description": "Total physical memory of the XPS in bytes, from `node_memory_MemTotal_bytes`. From node_exporter on the XPS. Shows the system's memory capacity."
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "shades",
+            "palette": " Teals"
+          },
+          "unit": "bytes"
+        }
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 8
+      },
+      "targets": [
+        {
+          "expr": "rate(node_disk_read_bytes_total{{device=\"xps\",disk=\"sda\"}}[5m])",
+          "legendFormat": "Read",
+          "refId": "A"
+        },
+        {
+          "expr": "rate(node_disk_written_bytes_total{{device=\"xps\",disk=\"sda\"}}[5m])",
+          "legendFormat": "Write",
+          "refId": "B"
+        }
+      ],
+      "title": "Disk I/O (sda)",
+      "type": "graph",
+      "description": "Disk read rate on drive sda in bytes per second, from `rate(node_disk_read_bytes_total)` filtered to device sda. From node_exporter on the XPS."
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "shades",
+            "palette": " Oranges"
+          },
+          "unit": "bytes"
+        }
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 8
+      },
+      "targets": [
+        {
+          "expr": "rate(node_disk_read_bytes_total{{device=\"xps\",disk=\"sdb\"}}[5m])",
+          "legendFormat": "Read",
+          "refId": "A"
+        },
+        {
+          "expr": "rate(node_disk_written_bytes_total{{device=\"xps\",disk=\"sdb\"}}[5m])",
+          "legendFormat": "Write",
+          "refId": "B"
+        }
+      ],
+      "title": "Disk I/O (sdb)",
+      "type": "graph",
+      "description": "Disk read rate on drive sdb in bytes per second, from `rate(node_disk_read_bytes_total)` filtered to device sdb. From node_exporter on the XPS."
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "shades",
+            "palette": " Greens"
+          },
+          "unit": "bytes"
+        }
+      },
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 16
+      },
+      "targets": [
+        {
+          "expr": "rate(node_network_receive_bytes_total{{device=\"xps\",interface=\"tailscale0\"}}[5m])",
+          "legendFormat": "RX",
+          "refId": "A"
+        },
+        {
+          "expr": "rate(node_network_transmit_bytes_total{{device=\"xps\",interface=\"tailscale0\"}}[5m])",
+          "legendFormat": "TX",
+          "refId": "B"
+        }
+      ],
+      "title": "Network Traffic (tailscale0)",
+      "type": "graph",
+      "description": "Network receive rate on the Tailscale interface (tailscale0) in bytes per second, from `rate(node_network_receive_bytes_total)` filtered to tailscale0. From node_exporter on the XPS. Represents traffic over the Tailscale VPN tunnel."
+    },
+    {
+      "content": "## XPS Hardware Summary\n\n**Device:** Dell XPS L701X\n**Model:** INTEL SSDSC2CW180A3 (sda) + ST1000LM014-1EJ164 (sdb)\n\n**CPU:** {{instance}} \u2014 Intel Core i7-2840QM\n**RAM:** {{node_memory_MemTotal_bytes}} bytes total\n\n_Updated: {{__rate_interval}}_",
+      "gridPos": {
+        "h": 4,
+        "w": 24,
+        "x": 0,
+        "y": 24
+      },
+      "mode": "markdown",
+      "title": "Node Info",
+      "type": "text",
+      "description": "Text panel displaying static node information about the XPS (hostname, OS, kernel, architecture, etc.). From node_exporter's `/metrics` text output. Provides identifying context for the hardware being monitored."
+    }
+  ],
+  "refresh": "30s",
+  "schemaVersion": 38,
+  "tags": [
+    "xps",
+    "hardware",
+    "node-exporter"
+  ],
+  "timezone": "browser",
+  "title": "XPS Hardware Monitor",
+  "uid": "xps-hardware",
+  "version": 1
+}

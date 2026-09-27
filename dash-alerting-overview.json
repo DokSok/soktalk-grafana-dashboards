@@ -1,0 +1,347 @@
+{
+  "id": null,
+  "uid": "alerting-overview",
+  "title": "Alerting / Alert Overview",
+  "tags": [
+    "alerting",
+    "alerts",
+    "monitoring"
+  ],
+  "timezone": "browser",
+  "panels": [
+    {
+      "id": 1,
+      "title": "Active Alerts (Critical)",
+      "type": "stat",
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 0,
+        "y": 0
+      },
+      "targets": [
+        {
+          "expr": "sum(ALERTS{severity=\"critical\"})",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "thresholds": {
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 1
+              }
+            ]
+          }
+        }
+      },
+      "description": "Number of currently active alerts at **critical** severity, from Alertmanager's `ALERTS` metric (exposed by Prometheus). A non-zero value means something needs immediate attention."
+    },
+    {
+      "id": 2,
+      "title": "Active Alerts (Warning)",
+      "type": "stat",
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 4,
+        "y": 0
+      },
+      "targets": [
+        {
+          "expr": "sum(ALERTS{severity=\"warning\"})",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      },
+      "description": "Number of currently active alerts at **warning** severity, from Alertmanager's `ALERTS` metric. Warning-level alerts are significant but not necessarily urgent."
+    },
+    {
+      "id": 3,
+      "title": "Total Active Alerts",
+      "type": "stat",
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 8,
+        "y": 0
+      },
+      "targets": [
+        {
+          "expr": "sum(ALERTS)",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      },
+      "description": "Sum of all active alerts across all severities, from the `ALERTS` metric surfaced by Alertmanager. Includes both critical and warning."
+    },
+    {
+      "id": 4,
+      "title": "Total Silences",
+      "type": "stat",
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 12,
+        "y": 0
+      },
+      "targets": [
+        {
+          "expr": "count(alertmanager_silences)",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      },
+      "description": "Count of active silences in Alertmanager, from `alertmanager_silences`. Silences suppress notifications for matching alerts for a defined window."
+    },
+    {
+      "id": 5,
+      "title": "Alerts by Severity",
+      "type": "graph",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 8
+      },
+      "targets": [
+        {
+          "expr": "sum(ALERTS) by (severity)",
+          "legendFormat": "{{severity}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      },
+      "description": "Distribution of active alerts grouped by severity (critical / warning), from `ALERTS` by (severity). Shows the relative weight of critical vs warning issues."
+    },
+    {
+      "id": 6,
+      "title": "Alerts by Name",
+      "type": "graph",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 8
+      },
+      "targets": [
+        {
+          "expr": "sum(ALERTS) by (alertname)",
+          "legendFormat": "{{alertname}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      },
+      "description": "Active alert count grouped by alert name, from `ALERTS` by (alertname). Helps identify which specific alert rules are currently firing."
+    },
+    {
+      "id": 7,
+      "title": "Alert History (last 24h)",
+      "type": "graph",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 16
+      },
+      "targets": [
+        {
+          "expr": "sum(increase(alertmanager_alerts_total[1h])) by (alertname)",
+          "legendFormat": "{{alertname}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      },
+      "description": "Hourly rate of alert state changes (firings) over the last 24 hours, from `alertmanager_alerts_total` increase by alertname. Shows alert activity trends, not current state."
+    },
+    {
+      "id": 8,
+      "title": "Alertmanager Uptime",
+      "type": "stat",
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 0,
+        "y": 24
+      },
+      "targets": [
+        {
+          "expr": "up{job=\"alertmanager\"}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      },
+      "description": "Whether the Alertmanager instance is reachable, from the standard Prometheus `up{job=\"alertmanager\"}` metric. 1 = up, 0 = down."
+    },
+    {
+      "id": 9,
+      "title": "Alertmanager Memory",
+      "type": "graph",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 24
+      },
+      "targets": [
+        {
+          "expr": "container_memory_working_set_bytes{container=\"alertmanager\", pod=~\"alertmanager-.*\"}",
+          "legendFormat": "{{pod}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes"
+        }
+      },
+      "description": "Working set memory usage of the Alertmanager container, from cAdvisor/container metrics `container_memory_working_set_bytes`. Tracked per pod."
+    },
+    {
+      "id": 10,
+      "title": "Alertmanager CPU",
+      "type": "graph",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 32
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(container_cpu_usage_seconds_total{container=\"alertmanager\", pod=~\"alertmanager-.*\"}[5m])) by (pod)",
+          "legendFormat": "{{pod}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "core"
+        }
+      },
+      "description": "CPU usage rate of the Alertmanager container, from `container_cpu_usage_seconds_total`. Shown per pod."
+    },
+    {
+      "id": 11,
+      "title": "Pending Alerts",
+      "type": "stat",
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 4,
+        "y": 32
+      },
+      "targets": [
+        {
+          "expr": "sum(pending_alertmanager_alerts)",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      },
+      "description": "Number of alerts queued and waiting to be sent by Alertmanager, from `pending_alertmanager_alerts`. High values may indicate a notification bottleneck."
+    },
+    {
+      "id": 12,
+      "title": "Notification Rate",
+      "type": "graph",
+      "gridPos": {
+        "h": 4,
+        "w": 8,
+        "x": 8,
+        "y": 32
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(alertmanager_notifications_total[5m])) by (integration)",
+          "legendFormat": "{{integration}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      },
+      "description": "Rate of notifications sent by Alertmanager, broken down by integration (e.g. email, Slack, PagerDuty), from `alertmanager_notifications_total`."
+    },
+    {
+      "id": 13,
+      "title": "Notifications Failed",
+      "type": "graph",
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 16,
+        "y": 32
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(alertmanager_notifications_failed_total[5m]))",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      },
+      "description": "Rate of failed notifications from Alertmanager, from `alertmanager_notifications_failed_total`. Non-zero means some notifications are not reaching their recipients."
+    }
+  ],
+  "schemaVersion": 42,
+  "version": 1,
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "templating": {
+    "list": []
+  },
+  "annotations": {
+    "list": []
+  },
+  "refresh": "5s",
+  "links": [],
+  "editable": true,
+  "graphTooltip": 1
+}

@@ -1,0 +1,374 @@
+{
+  "id": null,
+  "uid": "k8s-nodes-detail",
+  "title": "Kubernetes / Nodes Detail",
+  "tags": [
+    "kubernetes",
+    "nodes",
+    "infrastructure"
+  ],
+  "timezone": "browser",
+  "panels": [
+    {
+      "id": 1,
+      "title": "Nodes Online",
+      "type": "stat",
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 0,
+        "y": 0
+      },
+      "targets": [
+        {
+          "expr": "count(count by (instance) (up{job=\"node-exporter\"}))",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "thresholds": {
+            "steps": [
+              {
+                "color": "red",
+                "value": null
+              },
+              {
+                "color": "green",
+                "value": 1
+              }
+            ]
+          }
+        }
+      },
+      "description": "Number of nodes that are reachable by Prometheus (node_exporter scrape target is up), from `up{job=\"node-exporter\"}`. Counts distinct instances."
+    },
+    {
+      "id": 2,
+      "title": "Total CPU Cores",
+      "type": "stat",
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 4,
+        "y": 0
+      },
+      "targets": [
+        {
+          "expr": "sum(count by (instance) (node_cpu_seconds_total))",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      },
+      "description": "Sum of CPU cores across all nodes, derived from `node_cpu_seconds_total` (count of CPU entries per node). From node_exporter."
+    },
+    {
+      "id": 3,
+      "title": "Total Memory (GiB)",
+      "type": "stat",
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 8,
+        "y": 0
+      },
+      "targets": [
+        {
+          "expr": "sum(node_memory_MemTotal_bytes) / 1024 / 1024 / 1024",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes"
+        }
+      },
+      "description": "Total physical memory across all nodes in GiB, from `node_memory_MemTotal_bytes`. From node_exporter."
+    },
+    {
+      "id": 4,
+      "title": "Total Disk (TiB)",
+      "type": "stat",
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 12,
+        "y": 0
+      },
+      "targets": [
+        {
+          "expr": "sum(node_filesystem_size_bytes{mountpoint!~\"^/sys|ver|proc|dev\"}) / 1024 / 1024 / 1024 / 1024",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes"
+        }
+      },
+      "description": "Total filesystem capacity across all nodes (excluding pseudo-filesystems like /sys, /proc, /dev) in TiB, from `node_filesystem_size_bytes`. From node_exporter."
+    },
+    {
+      "id": 5,
+      "title": "CPU Usage % by Node",
+      "type": "graph",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 8
+      },
+      "targets": [
+        {
+          "expr": "100 - avg by (instance) (rate(node_cpu_seconds_total{mode=\"idle\"}[5m]) * 100)",
+          "legendFormat": "{{instance}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent"
+        }
+      },
+      "description": "CPU utilization percentage per node (100 - idle%), from `node_cpu_seconds_total` by (instance). From node_exporter."
+    },
+    {
+      "id": 6,
+      "title": "Memory Usage % by Node",
+      "type": "graph",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 8
+      },
+      "targets": [
+        {
+          "expr": "(1 - node_memory_MemAvailable_bytes / node_memory_MemTotal_bytes) * 100",
+          "legendFormat": "{{instance}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent"
+        }
+      },
+      "description": "Memory usage percentage per node, from `(1 - MemAvailable/MemTotal) * 100` by (instance). From node_exporter."
+    },
+    {
+      "id": 7,
+      "title": "Disk Usage % by Node",
+      "type": "graph",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 16
+      },
+      "targets": [
+        {
+          "expr": "(1 - node_filesystem_avail_bytes{mountpoint=\"/\"} / node_filesystem_size_bytes{mountpoint=\"/\"}) * 100",
+          "legendFormat": "{{instance}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent"
+        }
+      },
+      "description": "Root filesystem usage percentage per node, from `(1 - avail/size) * 100` for mountpoint `/`. From node_exporter."
+    },
+    {
+      "id": 8,
+      "title": "Network In (MiB/s) by Node",
+      "type": "graph",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 16
+      },
+      "targets": [
+        {
+          "expr": "sum by (instance) (rate(node_network_receive_bytes_total[5m])) / 1024 / 1024",
+          "legendFormat": "{{instance}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes"
+        }
+      },
+      "description": "Network receive rate per node in MiB/s, from `rate(node_network_receive_bytes_total[5m])`. From node_exporter."
+    },
+    {
+      "id": 9,
+      "title": "Network Out (MiB/s) by Node",
+      "type": "graph",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 24
+      },
+      "targets": [
+        {
+          "expr": "sum by (instance) (rate(node_network_transmit_bytes_total[5m])) / 1024 / 1024",
+          "legendFormat": "{{instance}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes"
+        }
+      },
+      "description": "Network transmit rate per node in MiB/s, from `rate(node_network_transmit_bytes_total[5m])`. From node_exporter."
+    },
+    {
+      "id": 10,
+      "title": "Disk Read (MiB/s) by Node",
+      "type": "graph",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 24
+      },
+      "targets": [
+        {
+          "expr": "sum by (instance) (rate(node_disk_read_bytes_total[5m])) / 1024 / 1024",
+          "legendFormat": "{{instance}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes"
+        }
+      },
+      "description": "Disk read rate per node in MiB/s, from `rate(node_disk_read_bytes_total[5m])`. From node_exporter."
+    },
+    {
+      "id": 11,
+      "title": "Disk Write (MiB/s) by Node",
+      "type": "graph",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 32
+      },
+      "targets": [
+        {
+          "expr": "sum by (instance) (rate(node_disk_written_bytes_total[5m])) / 1024 / 1024",
+          "legendFormat": "{{instance}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes"
+        }
+      },
+      "description": "Disk write rate per node in MiB/s, from `rate(node_disk_written_bytes_total[5m])`. From node_exporter."
+    },
+    {
+      "id": 12,
+      "title": "Node CPU Load (1m) by Node",
+      "type": "graph",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 32
+      },
+      "targets": [
+        {
+          "expr": "node_load1",
+          "legendFormat": "{{instance}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      },
+      "description": "1-minute load average per node, from `node_load1`. From node_exporter. Values above core count indicate saturation."
+    },
+    {
+      "id": 13,
+      "title": "Node CPU Load (5m) by Node",
+      "type": "graph",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 40
+      },
+      "targets": [
+        {
+          "expr": "node_load5",
+          "legendFormat": "{{instance}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      },
+      "description": "5-minute load average per node, from `node_load5`. From node_exporter."
+    },
+    {
+      "id": 14,
+      "title": "Node CPU Load (15m) by Node",
+      "type": "graph",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 40
+      },
+      "targets": [
+        {
+          "expr": "node_load15",
+          "legendFormat": "{{instance}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      },
+      "description": "15-minute load average per node, from `node_load15`. From node_exporter."
+    }
+  ],
+  "schemaVersion": 42,
+  "version": 1,
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "templating": {
+    "list": []
+  },
+  "annotations": {
+    "list": []
+  },
+  "refresh": "5s",
+  "links": [],
+  "editable": true,
+  "graphTooltip": 1
+}

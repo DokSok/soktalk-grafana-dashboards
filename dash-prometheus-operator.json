@@ -1,0 +1,124 @@
+{
+  "id": null,
+  "uid": "prometheus-operator",
+  "title": "Prometheus Operator",
+  "tags": [
+    "prometheus",
+    "operator"
+  ],
+  "timezone": "browser",
+  "panels": [
+    {
+      "id": 1,
+      "title": "Scrape Duration (99th pct)",
+      "type": "graph",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 0
+      },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.99, sum(rate(prometheus_engine_query_duration_seconds_bucket[5m])) by (le))",
+          "legendFormat": "Query",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s"
+        }
+      },
+      "description": "99th percentile query evaluation duration across all Prometheus instances, from `histogram_quantile(0.99, prometheus_engine_query_duration_seconds_bucket)`. High values mean slow queries."
+    },
+    {
+      "id": 2,
+      "title": "Scrape Samples by Job",
+      "type": "graph",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 0
+      },
+      "targets": [
+        {
+          "expr": "sum(prometheus_target_scrapes_total) by (job)",
+          "legendFormat": "{{job}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      },
+      "description": "Total scrape samples collected per scrape job, from `prometheus_target_scrapes_total` by (job). Shows which targets are being scraped."
+    },
+    {
+      "id": 3,
+      "title": "Active Alerts",
+      "type": "graph",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 8
+      },
+      "targets": [
+        {
+          "expr": "sum(ALERTS) by (alertname, severity)",
+          "legendFormat": "{{alertname}} ({{severity}})",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      },
+      "description": "Active alerts grouped by alert name and severity, from the `ALERTS` metric. Same data as the alerting overview but displayed per-alert."
+    },
+    {
+      "id": 4,
+      "title": "Rule Evaluation Duration",
+      "type": "graph",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 8
+      },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.99, sum(rate(prometheus_rule_evaluation_duration_seconds_bucket[5m])) by (le))",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s"
+        }
+      },
+      "description": "99th percentile rule evaluation duration, from `histogram_quantile(0.99, prometheus_rule_evaluation_duration_seconds_bucket)`. Slow rule evaluation can delay alerts."
+    }
+  ],
+  "schemaVersion": 42,
+  "version": 1,
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "templating": {
+    "list": []
+  },
+  "annotations": {
+    "list": []
+  },
+  "refresh": "5s",
+  "links": [],
+  "editable": true,
+  "graphTooltip": 1
+}

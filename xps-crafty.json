@@ -1,0 +1,256 @@
+{
+  "id": null,
+  "panels": [
+    {
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 0
+      },
+      "options": {
+        "rowCount": 10,
+        "showHeader": true
+      },
+      "reduceOptions": {
+        "calcs": [
+          "lastNotNull"
+        ],
+        "fields": "",
+        "values": false
+      },
+      "targets": [
+        {
+          "expr": "crafty_server_running{job=\"xps-crafty-metrics\", device=\"xps\"}",
+          "format": "table",
+          "instant": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Server Running Status",
+      "type": "table",
+      "description": "Whether each Crafty-managed Minecraft server is currently running, from the `crafty_server_running` metric exposed by the crafty-exporter on the XPS. 1 = running, 0 = stopped. Data source: custom crafty-exporter (port 9201) scraped by Prometheus."
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "thresholds"
+          },
+          "min": 0,
+          "thresholds": {
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 10
+              },
+              {
+                "color": "red",
+                "value": 20
+              }
+            ]
+          },
+          "unit": "none"
+        }
+      },
+      "fill": 1,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 8
+      },
+      "lines": true,
+      "strokeWidth": 1,
+      "targets": [
+        {
+          "expr": "crafty_players_online{job=\"xps-crafty-metrics\", device=\"xps\"}",
+          "legendFormat": "{{server_id}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Online Players (per server)",
+      "type": "graph",
+      "description": "Number of players currently online on each Crafty-managed Minecraft server, from `crafty_players_online`. From the crafty-exporter on the XPS."
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "shades",
+            "palette": " Greens"
+          },
+          "max": 100,
+          "min": 0,
+          "unit": "percent"
+        }
+      },
+      "fill": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 8
+      },
+      "lines": true,
+      "strokeWidth": 1,
+      "targets": [
+        {
+          "expr": "crafty_server_cpu_usage_percent{job=\"xps-crafty-metrics\", device=\"xps\"}",
+          "legendFormat": "{{server_id}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Server CPU Usage %",
+      "type": "graph",
+      "description": "CPU usage percentage of each Minecraft server process, reported by Crafty and exposed via `crafty_server_cpu_usage_percent`. From the crafty-exporter on the XPS."
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "shades",
+            "palette": " Blues"
+          },
+          "unit": "bytes"
+        }
+      },
+      "fill": 0,
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 16
+      },
+      "lines": true,
+      "strokeWidth": 1,
+      "targets": [
+        {
+          "expr": "crafty_memory_used_bytes{job=\"xps-crafty-metrics\", device=\"xps\"}",
+          "legendFormat": "{{server_id}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Java Memory Used (per server)",
+      "type": "graph",
+      "description": "Java heap memory currently used by each Minecraft server process, from `crafty_memory_used_bytes`. From the crafty-exporter on the XPS."
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "shades",
+            "palette": " Oranges"
+          },
+          "unit": "bytes"
+        }
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 12,
+        "x": 12,
+        "y": 16
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "expr": "crafty_memory_total_bytes{job=\"xps-crafty-metrics\", device=\"xps\"}",
+          "legendFormat": "{{server_id}}",
+          "refId": "A"
+        }
+      ],
+      "title": "Server Memory Total",
+      "type": "stat",
+      "description": "Total Java memory allocated to each Minecraft server process, from `crafty_memory_total_bytes`. From the crafty-exporter on the XPS."
+    },
+    {
+      "fieldConfig": {
+        "defaults": {
+          "color": {
+            "mode": "shades",
+            "palette": " Teals"
+          },
+          "unit": "bytes"
+        }
+      },
+      "gridPos": {
+        "h": 4,
+        "w": 12,
+        "x": 0,
+        "y": 20
+      },
+      "options": {
+        "colorMode": "value",
+        "graphMode": "none",
+        "reduceOptions": {
+          "calcs": [
+            "lastNotNull"
+          ]
+        }
+      },
+      "targets": [
+        {
+          "expr": "crafty_world_size_bytes{job=\"xps-crafty-metrics\", device=\"xps\"}",
+          "legendFormat": "{{server_id}}",
+          "refId": "A"
+        }
+      ],
+      "title": "World Size (per server)",
+      "type": "stat",
+      "description": "Total size of each server's world directory on disk, from `crafty_world_size_bytes`. From the crafty-exporter on the XPS. Indicates storage used by each world."
+    },
+    {
+      "gridPos": {
+        "h": 8,
+        "w": 24,
+        "x": 0,
+        "y": 24
+      },
+      "options": {
+        "rowCount": 10,
+        "showHeader": true
+      },
+      "reduceOptions": {
+        "calcs": [
+          "lastNotNull"
+        ],
+        "fields": "",
+        "values": false
+      },
+      "targets": [
+        {
+          "expr": "crafty_server_info{job=\"xps-crafty-metrics\", device=\"xps\"}",
+          "format": "table",
+          "instant": true,
+          "refId": "A"
+        }
+      ],
+      "title": "Server Info Table",
+      "type": "table",
+      "description": "Table of server metadata including name, status, players, CPU, memory, and world info for each Crafty-managed server, from `crafty_server_info`. From the crafty-exporter on the XPS."
+    }
+  ],
+  "refresh": "10s",
+  "schemaVersion": 38,
+  "tags": [
+    "xps",
+    "crafty",
+    "minecraft"
+  ],
+  "timezone": "browser",
+  "title": "Crafty Minecraft Server Manager",
+  "uid": "xps-crafty",
+  "version": 1
+}

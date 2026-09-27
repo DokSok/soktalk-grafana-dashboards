@@ -1,0 +1,437 @@
+{
+  "id": null,
+  "uid": "cert-manager-certificates",
+  "title": "cert-manager / Certificates",
+  "tags": [
+    "cert-manager",
+    "tls",
+    "certificates"
+  ],
+  "timezone": "browser",
+  "panels": [
+    {
+      "id": 1,
+      "title": "Certificates Expiring Soon",
+      "type": "stat",
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 0,
+        "y": 0
+      },
+      "targets": [
+        {
+          "expr": "count(certmanager_certificate_expiration_timestamp_seconds - time() < 86400 * 30)",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short",
+          "thresholds": {
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "yellow",
+                "value": 1
+              },
+              {
+                "color": "red",
+                "value": 5
+              }
+            ]
+          }
+        }
+      },
+      "description": "Count of certificates expiring within the next 30 days, from cert-manager's `certmanager_certificate_expiration_timestamp_seconds`. A non-zero value means certificates need renewal soon."
+    },
+    {
+      "id": 2,
+      "title": "Certificates Ready",
+      "type": "stat",
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 4,
+        "y": 0
+      },
+      "targets": [
+        {
+          "expr": "count(certmanager_certificate_status=\"Ready\")",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      },
+      "description": "Count of certificates with status **Ready** (issued and valid), from `certmanager_certificate_status=\"Ready\"`. These are actively serving TLS."
+    },
+    {
+      "id": 3,
+      "title": "Total Certificates",
+      "type": "stat",
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 8,
+        "y": 0
+      },
+      "targets": [
+        {
+          "expr": "count(certmanager_certificate_status)",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      },
+      "description": "Total number of Certificate resources known to cert-manager, from `certmanager_certificate_status`. Includes ready, pending, and failed certificates."
+    },
+    {
+      "id": 4,
+      "title": "Issuer Count",
+      "type": "stat",
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 12,
+        "y": 0
+      },
+      "targets": [
+        {
+          "expr": "count(certmanager_issuer_status)",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      },
+      "description": "Number of Issuer/ClusterIssuer resources registered with cert-manager, from `certmanager_issuer_status`."
+    },
+    {
+      "id": 5,
+      "title": "Certificate Expiry Timeline",
+      "type": "graph",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 8
+      },
+      "targets": [
+        {
+          "expr": "certmanager_certificate_expiration_timestamp_seconds - time()",
+          "legendFormat": "{{cert_name}} ({{namespace}})",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "s",
+          "thresholds": {
+            "steps": [
+              {
+                "color": "red",
+                "value": 0
+              },
+              {
+                "color": "yellow",
+                "value": 604800
+              },
+              {
+                "color": "green",
+                "value": 2592000
+              }
+            ]
+          }
+        }
+      },
+      "description": "Time remaining until each certificate expires, from `certmanager_certificate_expiration_timestamp_seconds - time()`. Each line is one certificate; lower lines need attention sooner."
+    },
+    {
+      "id": 6,
+      "title": "Certificate Renewal Rate",
+      "type": "graph",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 8
+      },
+      "targets": [
+        {
+          "expr": "sum(increase(certmanager_certificate_renewal_timestamp_seconds[1h])) by (namespace)",
+          "legendFormat": "{{namespace}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      },
+      "description": "Rate of certificate renewals over the last hour, from `certmanager_certificate_renewal_timestamp_seconds` increase by namespace. Shows renewal activity, not current expiry state."
+    },
+    {
+      "id": 7,
+      "title": "Certificates by Namespace",
+      "type": "graph",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 16
+      },
+      "targets": [
+        {
+          "expr": "count(certmanager_certificate_status) by (namespace)",
+          "legendFormat": "{{namespace}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      },
+      "description": "Count of certificates per namespace, from `certmanager_certificate_status` by (namespace). Shows where TLS is being managed."
+    },
+    {
+      "id": 8,
+      "title": "Certificate Conditions",
+      "type": "graph",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 16
+      },
+      "targets": [
+        {
+          "expr": "count(certmanager_certificate_condition{status=\"True\"}) by (type)",
+          "legendFormat": "{{type}}",
+          "refId": "A"
+        },
+        {
+          "expr": "count(certmanager_certificate_condition{status=\"False\"}) by (type)",
+          "legendFormat": "Failed: {{type}}",
+          "refId": "B"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      },
+      "description": "Count of certificate conditions marked True, grouped by condition type, from `certmanager_certificate_condition`. Conditions like `Ready` indicate operational status."
+    },
+    {
+      "id": 9,
+      "title": "cert-manager CPU Usage",
+      "type": "graph",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 24
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(container_cpu_usage_seconds_total{container=\"cert-manager\", pod=~\"cert-manager-.*\"}[5m])) by (pod)",
+          "legendFormat": "{{pod}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "core"
+        }
+      },
+      "description": "CPU usage rate of the cert-manager controller container, from `container_cpu_usage_seconds_total`. Per pod."
+    },
+    {
+      "id": 10,
+      "title": "cert-manager Memory Usage",
+      "type": "graph",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 24
+      },
+      "targets": [
+        {
+          "expr": "sum(container_memory_working_set_bytes{container=\"cert-manager\", pod=~\"cert-manager-.*\"}) by (pod)",
+          "legendFormat": "{{pod}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes"
+        }
+      },
+      "description": "Working set memory of the cert-manager controller, from `container_memory_working_set_bytes`. Per pod."
+    },
+    {
+      "id": 11,
+      "title": "Certificates Expiring in Next 7 Days",
+      "type": "table",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 32
+      },
+      "targets": [
+        {
+          "expr": "certmanager_certificate_expiration_timestamp_seconds - time() < 604800",
+          "format": "table",
+          "instant": true,
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "calcs": [
+              "max"
+            ],
+            "fill": 0,
+            "lines": {
+              "show": false
+            },
+            "points": {
+              "show": false
+            },
+            "show": true,
+            "slider": {
+              "max": 100,
+              "min": 0
+            },
+            "threshold": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "red",
+                  "value": 0
+                }
+              ]
+            }
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Time"
+            },
+            "properties": [
+              {
+                "id": "custom.hide",
+                "value": true
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "showHeader": true
+      },
+      "description": "Table of Certificate resources expiring within 7 days (604800 seconds), showing name, namespace, and expiry details. Immediate action items."
+    },
+    {
+      "id": 12,
+      "title": "Certificates Expiring in Next 30 Days",
+      "type": "table",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 32
+      },
+      "targets": [
+        {
+          "expr": "certmanager_certificate_expiration_timestamp_seconds - time() < 2592000",
+          "format": "table",
+          "instant": true,
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "custom": {
+            "calcs": [
+              "max"
+            ],
+            "fill": 0,
+            "lines": {
+              "show": false
+            },
+            "points": {
+              "show": false
+            },
+            "show": true,
+            "slider": {
+              "max": 100,
+              "min": 0
+            },
+            "threshold": {
+              "mode": "absolute",
+              "steps": [
+                {
+                  "color": "yellow",
+                  "value": 0
+                }
+              ]
+            }
+          }
+        },
+        "overrides": [
+          {
+            "matcher": {
+              "id": "byName",
+              "options": "Time"
+            },
+            "properties": [
+              {
+                "id": "custom.hide",
+                "value": true
+              }
+            ]
+          }
+        ]
+      },
+      "options": {
+        "showHeader": true
+      },
+      "description": "Table of Certificate resources expiring within 30 days (2592000 seconds). Broader view of upcoming renewals."
+    }
+  ],
+  "schemaVersion": 42,
+  "version": 1,
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "templating": {
+    "list": []
+  },
+  "annotations": {
+    "list": []
+  },
+  "refresh": "5s",
+  "links": [],
+  "editable": true,
+  "graphTooltip": 1
+}

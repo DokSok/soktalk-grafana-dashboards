@@ -1,0 +1,381 @@
+{
+  "id": null,
+  "uid": "gatekeeper-policy",
+  "title": "Gatekeeper / Policy & Admission",
+  "tags": [
+    "gatekeeper",
+    "opa",
+    "policy",
+    "security"
+  ],
+  "timezone": "browser",
+  "panels": [
+    {
+      "id": 1,
+      "title": "Total Admission Requests",
+      "type": "stat",
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 0,
+        "y": 0
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(gatekeeper_admission_controller_admission_request_total[5m])) * 60",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      },
+      "description": "Total admission requests received by Gatekeeper over the last 5 minutes (converted to a per-minute rate), from `gatekeeper_admission_controller_admission_request_total`."
+    },
+    {
+      "id": 2,
+      "title": "Denied Requests (5m)",
+      "type": "stat",
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 4,
+        "y": 0
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(gatekeeper_admission_controller_admission_request_total{rejection_reason!=\"\"}[5m])) * 60",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      },
+      "description": "Admission requests rejected by Gatekeeper policy over the last 5 minutes, from `gatekeeper_admission_controller_admission_request_total` where rejection_reason is non-empty."
+    },
+    {
+      "id": 3,
+      "title": "Denial Rate %",
+      "type": "stat",
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 8,
+        "y": 0
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(gatekeeper_admission_controller_admission_request_total{rejection_reason!=\"\"}[5m])) / sum(rate(gatekeeper_admission_controller_admission_request_total[5m])) * 100",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "percent",
+          "thresholds": {
+            "steps": [
+              {
+                "color": "green",
+                "value": null
+              },
+              {
+                "color": "red",
+                "value": 10
+              }
+            ]
+          }
+        }
+      },
+      "description": "Percentage of admission requests denied by Gatekeeper, calculated as denied / total requests. Shows how much of the workload is being blocked by policy."
+    },
+    {
+      "id": 4,
+      "title": "Gatekeeper Pods",
+      "type": "stat",
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 12,
+        "y": 0
+      },
+      "targets": [
+        {
+          "expr": "sum(kube_pod_status_phase{phase=\"Running\", pod=~\"gatekeeper-.*\"})",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      },
+      "description": "Number of Gatekeeper controller pods in Running state, from `kube_pod_status_phase` filtered to gatekeeper pods."
+    },
+    {
+      "id": 5,
+      "title": "Admission Request Rate",
+      "type": "graph",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 8
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(gatekeeper_admission_controller_admission_request_total[5m]))",
+          "legendFormat": "All requests",
+          "refId": "A"
+        },
+        {
+          "expr": "sum(rate(gatekeeper_admission_controller_admission_request_total{rejection_reason!=\"\"}[5m]))",
+          "legendFormat": "Denied",
+          "refId": "B"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "reqps"
+        }
+      },
+      "description": "Rate of admission requests hitting Gatekeeper over time, from `gatekeeper_admission_controller_admission_request_total`."
+    },
+    {
+      "id": 6,
+      "title": "Admission Latency (ms)",
+      "type": "graph",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 8
+      },
+      "targets": [
+        {
+          "expr": "histogram_quantile(0.99, sum(rate(gatekeeper_admission_controller_admission_request_duration_seconds_bucket[5m])) by (le)) * 1000",
+          "legendFormat": "p99",
+          "refId": "A"
+        },
+        {
+          "expr": "histogram_quantile(0.50, sum(rate(gatekeeper_admission_controller_admission_request_duration_seconds_bucket[5m])) by (le)) * 1000",
+          "legendFormat": "p50",
+          "refId": "B"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "ms"
+        }
+      },
+      "description": "Latency of admission requests processed by Gatekeeper, in milliseconds. Higher latency means policy evaluation is slowing down API requests."
+    },
+    {
+      "id": 7,
+      "title": "Policy Violations by Constraint",
+      "type": "graph",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 16
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(gatekeeper_constraint_violation_total[5m])) by (constraint)",
+          "legendFormat": "{{constraint}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      },
+      "description": "Rate of constraint violations grouped by constraint name, from `gatekeeper_constraint_violation_total` by (constraint). Shows which policies are being violated most."
+    },
+    {
+      "id": 8,
+      "title": "Violation Rate by Namespace",
+      "type": "graph",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 16
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(gatekeeper_constraint_violation_total[5m])) by (namespace)",
+          "legendFormat": "{{namespace}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      },
+      "description": "Rate of constraint violations grouped by namespace, from `gatekeeper_constraint_violation_total` by (namespace). Identifies namespaces with policy compliance issues."
+    },
+    {
+      "id": 9,
+      "title": "Gatekeeper CPU Usage",
+      "type": "graph",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 0,
+        "y": 24
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(container_cpu_usage_seconds_total{container=\"gatekeeper-controller\", pod=~\"gatekeeper-.*\"}[5m])) by (pod)",
+          "legendFormat": "{{pod}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "core"
+        }
+      },
+      "description": "CPU usage rate of the Gatekeeper controller container, from `container_cpu_usage_seconds_total`. Per pod."
+    },
+    {
+      "id": 10,
+      "title": "Gatekeeper Memory Usage",
+      "type": "graph",
+      "gridPos": {
+        "h": 8,
+        "w": 12,
+        "x": 12,
+        "y": 24
+      },
+      "targets": [
+        {
+          "expr": "sum(container_memory_working_set_bytes{container=\"gatekeeper-controller\", pod=~\"gatekeeper-.*\"}) by (pod)",
+          "legendFormat": "{{pod}}",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "bytes"
+        }
+      },
+      "description": "Working set memory of the Gatekeeper controller, from `container_memory_working_set_bytes`. Per pod."
+    },
+    {
+      "id": 11,
+      "title": "Constraint Templates",
+      "type": "stat",
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 0,
+        "y": 32
+      },
+      "targets": [
+        {
+          "expr": "count(gatekeeper_constraint_template)",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      },
+      "description": "Number of ConstraintTemplate resources installed, from `gatekeeper_constraint_template`. Templates define the policy logic; constraints instantiate them."
+    },
+    {
+      "id": 12,
+      "title": "Active Constraints",
+      "type": "stat",
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 4,
+        "y": 32
+      },
+      "targets": [
+        {
+          "expr": "count(gatekeeper_constraint)",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      },
+      "description": "Number of Constraint resources (policy instances) active in the cluster, from `gatekeeper_constraint`."
+    },
+    {
+      "id": 13,
+      "title": "Dry Run Violations (5m)",
+      "type": "stat",
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 8,
+        "y": 32
+      },
+      "targets": [
+        {
+          "expr": "sum(rate(gatekeeper_constraint_violation_total{dry_run=\"true\"}[5m])) * 60",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      },
+      "description": "Violations detected in dry-run mode over 5 minutes, from `gatekeeper_constraint_violation_total{dry_run=\"true\"}. Dry-run violations would be denied if enforced."
+    },
+    {
+      "id": 14,
+      "title": "Total Violations (last 24h)",
+      "type": "stat",
+      "gridPos": {
+        "h": 4,
+        "w": 4,
+        "x": 12,
+        "y": 32
+      },
+      "targets": [
+        {
+          "expr": "sum(increase(gatekeeper_constraint_violation_total[24h]))",
+          "refId": "A"
+        }
+      ],
+      "fieldConfig": {
+        "defaults": {
+          "unit": "short"
+        }
+      },
+      "description": "Total constraint violations detected in the last 24 hours, from `increase(gatekeeper_constraint_violation_total[24h])`."
+    }
+  ],
+  "schemaVersion": 42,
+  "version": 1,
+  "time": {
+    "from": "now-6h",
+    "to": "now"
+  },
+  "timepicker": {},
+  "templating": {
+    "list": []
+  },
+  "annotations": {
+    "list": []
+  },
+  "refresh": "5s",
+  "links": [],
+  "editable": true,
+  "graphTooltip": 1
+}
